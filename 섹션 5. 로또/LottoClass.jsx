@@ -67,6 +67,7 @@ class Lotto extends Component {
       this.runTimeouts();
     }
     // useEffect에서는 이 부분을 따로 다른 useEffect로 또다른 로직을 작성하게 된다.
+    // class에서는 한번에, hooks에서는 따로따로 작성
     if (prevState.winNumbers !== this.state.winNumbers) {
       console.log("로또 숫자를 생성합니다.");
     }
