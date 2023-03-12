@@ -1,4 +1,6 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect } from "react";
+
+// delay가 null이 되는 순간 멈추게 할 수 있다.
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();

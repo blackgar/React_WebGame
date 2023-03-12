@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import useInterval from './useInterval';
+import React, { useState } from "react";
+import useInterval from "./useInterval";
 
 // https://velog.io/@jakeseo_me/%EB%B2%88%EC%97%AD-%EB%A6%AC%EC%95%A1%ED%8A%B8-%ED%9B%85%EC%8A%A4-%EC%BB%B4%ED%8F%AC%EB%84%8C%ED%8A%B8%EC%97%90%EC%84%9C-setInterval-%EC%82%AC%EC%9A%A9-%EC%8B%9C%EC%9D%98-%EB%AC%B8%EC%A0%9C%EC%A0%90#%ED%9B%85-%EB%81%84%EC%A7%91%EC%96%B4%EB%82%B4%EA%B8%B0
 const rspCoords = {
-  바위: '0',
-  가위: '-142px',
-  보: '-284px',
+  바위: "0",
+  가위: "-142px",
+  보: "-284px",
 };
 
 const scores = {
@@ -40,7 +40,7 @@ const computerChoice = (imgCoord) => {
 // }, [result]);
 
 const RSP = () => {
-  const [result, setResult] = useState('');
+  const [result, setResult] = useState("");
   const [imgCoord, setImgCoord] = useState(rspCoords.바위);
   const [score, setScore] = useState(0);
   const [isRunning, setIsRunning] = useState(true);
@@ -63,24 +63,26 @@ const RSP = () => {
       setImgCoord(rspCoords.바위);
     }
   };
-
+  // isRunning 여부에 따라 커스텀 훅을 활용해 interval을 시작했다가 멈췄다가 자유자재로 할 수 있게 구현
   useInterval(changeHand, isRunning ? 100 : null);
 
   const onClickBtn = (choice) => () => {
-    if (isRunning) { // 멈췄을 때 또 클릭하는 것 막기
+    if (isRunning) {
+      // 멈췄을 때 또 클릭하는 것 막기
       setIsRunning(false);
       const myScore = scores[choice];
       const cpuScore = scores[computerChoice(imgCoord)];
       const diff = myScore - cpuScore;
       if (diff === 0) {
-        setResult('비겼습니다!');
+        setResult("비겼습니다!");
       } else if ([-1, 2].includes(diff)) {
-        setResult('이겼습니다!');
+        setResult("이겼습니다!");
         setScore((prevScore) => prevScore + 1);
       } else {
-        setResult('졌습니다!');
+        setResult("졌습니다!");
         setScore((prevScore) => prevScore - 1);
       }
+      // 이렇게 간단하게 변수만 setter 함수로 변경을 해주면 자동으로 interval이 동작했다가, 멈췄다가 할 수 있게 구현 가능하다.(가독성 Up)
       setTimeout(() => {
         setIsRunning(true);
       }, 1000);
@@ -89,11 +91,22 @@ const RSP = () => {
 
   return (
     <>
-      <div id="computer" style={{ background: `url(https://en.pimg.jp/023/182/267/1/23182267.jpg) ${imgCoord} 0` }} />
+      <div
+        id="computer"
+        style={{
+          background: `url(https://en.pimg.jp/023/182/267/1/23182267.jpg) ${imgCoord} 0`,
+        }}
+      />
       <div>
-        <button id="rock" className="btn" onClick={onClickBtn('바위')}>바위</button>
-        <button id="scissor" className="btn" onClick={onClickBtn('가위')}>가위</button>
-        <button id="paper" className="btn" onClick={onClickBtn('보')}>보</button>
+        <button id="rock" className="btn" onClick={onClickBtn("바위")}>
+          바위
+        </button>
+        <button id="scissor" className="btn" onClick={onClickBtn("가위")}>
+          가위
+        </button>
+        <button id="paper" className="btn" onClick={onClickBtn("보")}>
+          보
+        </button>
       </div>
       <div>{result}</div>
       <div>현재 {score}점</div>
