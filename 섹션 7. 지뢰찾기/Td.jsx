@@ -1,52 +1,60 @@
-import React, { useContext, useCallback, useMemo, memo } from 'react';
-import { CLICK_MINE, CODE, FLAG_CELL, NORMALIZE_CELL, OPEN_CELL, QUESTION_CELL, TableContext } from './MineSearch';
-
+import React, { useContext, useCallback, useMemo, memo } from "react";
+import {
+  CLICK_MINE,
+  CODE,
+  FLAG_CELL,
+  NORMALIZE_CELL,
+  OPEN_CELL,
+  QUESTION_CELL,
+  TableContext,
+} from "./MineSearch";
+// 각 칸의 속성 및 상태별로 스타일을 다르게 적용
 const getTdStyle = (code) => {
   switch (code) {
     case CODE.NORMAL:
     case CODE.MINE:
       return {
-        background: '#444',
+        background: "#444",
       };
     case CODE.CLICKED_MINE:
     case CODE.OPENED:
       return {
-        background: 'white',
+        background: "white",
       };
     case CODE.QUESTION_MINE:
     case CODE.QUESTION:
       return {
-        background: 'yellow',
+        background: "yellow",
       };
     case CODE.FLAG_MINE:
     case CODE.FLAG:
       return {
-        background: 'red',
+        background: "red",
       };
     default:
       return {
-        background: 'white',
+        background: "white",
       };
   }
 };
-
+// 마찬가지로 보여져야할 텍스트 변경
 const getTdText = (code) => {
-  console.log('getTdtext');
+  console.log("getTdtext");
   switch (code) {
     case CODE.NORMAL:
-      return '';
+      return "";
     case CODE.MINE:
-      return 'X';
+      return "X";
     case CODE.CLICKED_MINE:
-      return '펑';
+      return "펑";
     case CODE.FLAG_MINE:
     case CODE.FLAG:
-      return '!';
+      return "!";
     case CODE.QUESTION_MINE:
     case CODE.QUESTION:
-      return '?';
+      return "?";
     default:
-      return code || '';
+      return code || "";
   }
 };
 
@@ -54,6 +62,7 @@ const Td = memo(({ rowIndex, cellIndex }) => {
   const { tableData, dispatch, halted } = useContext(TableContext);
 
   const onClickTd = useCallback(() => {
+    // 지뢰 밟았을 떄
     if (halted) {
       return;
     }
@@ -75,45 +84,56 @@ const Td = memo(({ rowIndex, cellIndex }) => {
     }
   }, [tableData[rowIndex][cellIndex], halted]);
 
-  const onRightClickTd = useCallback((e) => {
-    e.preventDefault();
-    if (halted) {
-      return;
-    }
-    switch (tableData[rowIndex][cellIndex]) {
-      case CODE.NORMAL:
-      case CODE.MINE:
-        dispatch({ type: FLAG_CELL, row: rowIndex, cell: cellIndex });
+  const onRightClickTd = useCallback(
+    (e) => {
+      e.preventDefault();
+      if (halted) {
         return;
-      case CODE.FLAG_MINE:
-      case CODE.FLAG:
-        dispatch({ type: QUESTION_CELL, row: rowIndex, cell: cellIndex });
-        return;
-      case CODE.QUESTION_MINE:
-      case CODE.QUESTION:
-        dispatch({ type: NORMALIZE_CELL, row: rowIndex, cell: cellIndex });
-        return;
-      default:
-        return;
-    }
-  }, [tableData[rowIndex][cellIndex], halted]);
+      }
+      switch (tableData[rowIndex][cellIndex]) {
+        case CODE.NORMAL:
+        case CODE.MINE:
+          dispatch({ type: FLAG_CELL, row: rowIndex, cell: cellIndex });
+          return;
+        case CODE.FLAG_MINE:
+        case CODE.FLAG:
+          dispatch({ type: QUESTION_CELL, row: rowIndex, cell: cellIndex });
+          return;
+        case CODE.QUESTION_MINE:
+        case CODE.QUESTION:
+          dispatch({ type: NORMALIZE_CELL, row: rowIndex, cell: cellIndex });
+          return;
+        default:
+          return;
+      }
+    },
+    [tableData[rowIndex][cellIndex], halted]
+  );
 
-  console.log('td rendered');
+  console.log("td rendered");
 
-  return <RealTd onClickTd={onClickTd} onRightClickTd={onRightClickTd} data={tableData[rowIndex][cellIndex]} />;
+  return (
+    <RealTd
+      onClickTd={onClickTd}
+      onRightClickTd={onRightClickTd}
+      data={tableData[rowIndex][cellIndex]}
+    />
+  );
 });
-Td.displayName = 'Td';
+Td.displayName = "Td";
 
-const RealTd = memo(({ onClickTd, onRightClickTd, data}) => {
-  console.log('real td rendered');
+const RealTd = memo(({ onClickTd, onRightClickTd, data }) => {
+  console.log("real td rendered");
   return (
     <td
       style={getTdStyle(data)}
       onClick={onClickTd}
       onContextMenu={onRightClickTd}
-    >{getTdText(data)}</td>
-  )
+    >
+      {getTdText(data)}
+    </td>
+  );
 });
-RealTd.displayName = 'RealTd';
+RealTd.displayName = "RealTd";
 
 export default Td;
